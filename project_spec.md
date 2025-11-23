@@ -23,7 +23,8 @@
 ### Frontend (SPA)
 * **Framework:** Vue 3 + TypeScript
 * **Build Tool:** Vite
-* **Auth:** `@auth0/auth0-vue`
+* **Auth:** `@auth0/auth0-vue` (Wrapper for Auth0 SPA SDK)
+* **Routing:** Vue Router 4 (With Navigation Guards)
 * **Type Sync:** `tygo` (Generates TS interfaces from Go structs)
 
 ### Infrastructure (IaC)
@@ -33,7 +34,11 @@
     * **CloudFront:** HTTPS distribution pointing to S3.
     * **Lambda:** Go binary (Arm64).
     * **API Gateway:** HTTP API (v2) integrated with Lambda.
-    * **Route53:** Custom domain + ACM Certificate.
+    * **Route53:**
+        * **Hosted Zone:** `faithforge.academy` (Imported).
+        * **Frontend:** `prayer.faithforge.academy` (A Record -> CloudFront).
+        * **Backend:** `prayerapi.faithforge.academy` (A Record -> API Gateway).
+    * **ACM:** Certificate for `*.faithforge.academy` (or specific SANs).
 
 ---
 
