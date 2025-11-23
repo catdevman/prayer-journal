@@ -3,10 +3,29 @@
 //////////
 // source: prayer.go
 
+/**
+ * PrayerStatus defines the state of a prayer
+ */
+export type PrayerStatus = string;
+export const StatusActive: PrayerStatus = "ACTIVE";
+export const StatusAnswered: PrayerStatus = "ANSWERED";
+export const StatusArchived: PrayerStatus = "ARCHIVED";
 export interface Prayer {
   id: string;
+  userId: string; // Partition Key: The user who owns this journal entry
+  createdAt: string; // Sort Key: For easy sorting by date
+  updatedAt: string;
   title: string;
-  content: string;
-  is_answered: boolean;
-  created_at: string;
+  body: string;
+  status: PrayerStatus;
+  /**
+   * Who is this prayer for? (e.g., "Aunt Sally", "My Country", "Myself")
+   */
+  target: string;
+  /**
+   * Sharing Metadata
+   * If this prayer was imported from a shared link, this field contains the contact info/name of the sharer.
+   */
+  sharedBy?: string;
+  isShared: boolean;
 }
