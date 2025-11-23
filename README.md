@@ -49,6 +49,8 @@ Ensure you have the following installed before starting:
     ```bash
     cd web
     npm install
+    # Install Auth0 SDK if missing
+    npm install @auth0/auth0-vue
     ```
 
 3.  **Environment Variables:**
@@ -56,7 +58,8 @@ Ensure you have the following installed before starting:
     ```ini
     VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
     VITE_AUTH0_CLIENT_ID=your-client-id
-    VITE_API_URL=[https://your-api-gateway-url.com](https://your-api-gateway-url.com) # You get this after first deploy
+    VITE_AUTH0_AUDIENCE=[https://prayerapi.faithforge.academy](https://prayerapi.faithforge.academy)
+    VITE_API_URL=[https://prayerapi.faithforge.academy](https://prayerapi.faithforge.academy) # You get this after first deploy
     ```
 
 ## 💻 Local Development
@@ -65,16 +68,15 @@ Ensure you have the following installed before starting:
 Since AWS Lambda is hard to mock perfectly locally, we recommend deploying a **Dev Stack** for the backend and running the frontend locally.
 
 1.  **Deploy Backend First:**
+    (See Deployment section below to set up Env Vars first)
     ```bash
     make deploy
     ```
-    *Capture the API Gateway URL from the CDK Output.*
 
 2.  **Run Frontend Locally:**
     Update `web/.env` with the API URL from step 1.
     ```bash
-    cd web
-    npm run dev
+    make dev-fe
     ```
 
 ### 2. Syncing Types (Backend -> Frontend)
@@ -89,9 +91,12 @@ Whenever you modify a struct in `internal/models`, sync the changes to TypeScrip
 
 ## 📦 Deployment
 
-We use a unified `Makefile` workflow to build the Go binary, build the Vite assets, and deploy the CDK stack.
+We use a unified `Makefile` workflow. **Critical:** You must export the Auth0 config before deploying, as these values are baked into the Lambda environment.
 
 ```bash
+export AUTH0_ISSUER="[https://your-tenant.us.auth0.com/](https://your-tenant.us.auth0.com/)"
+export AUTH0_AUDIENCE="[https://prayerapi.faithforge.academy](https://prayerapi.faithforge.academy)"
+
 make deploy
 ```
 
@@ -102,10 +107,10 @@ make deploy
 
 ## 🔧 Troubleshooting
 
+* **`hosted-zone` Error:** If you see "Cannot retrieve value from context provider hosted-zone", ensure your AWS CLI is configured correctly. The CDK uses your current CLI profile to look up the Route53 zone ID.
 * **Tygo not found:** Ensure `$(go env GOPATH)/bin` is in your `$PATH`.
 * **CDK Bootstrap Error:** If this is your first time using CDK in this region, run:
     ```bash
     cd infra
     cdk bootstrap aws://<ACCOUNT_ID>/<REGION>
     ```
-* **CORS Issues:** Ensure the `AllowedOrigins` in your Go-Chi CORS middleware matches your CloudFront URL (and `localhost:5173` for dev).
