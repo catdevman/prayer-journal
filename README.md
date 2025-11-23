@@ -19,7 +19,7 @@ Ensure you have the following installed before starting:
 4.  **AWS CDK**: `npm install -g aws-cdk`
 5.  **Tygo** (For syncing Go structs to TS):
     ```bash
-    go install [github.com/gzuidhof/tygo@latest](https://github.com/gzuidhof/tygo@latest)
+    go install https://github.com/gzuidhof/tygo@latest
     ```
 
 ## 📂 Project Structure
@@ -58,8 +58,8 @@ Ensure you have the following installed before starting:
     ```ini
     VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
     VITE_AUTH0_CLIENT_ID=your-client-id
-    VITE_AUTH0_AUDIENCE=[https://prayerapi.faithforge.academy](https://prayerapi.faithforge.academy)
-    VITE_API_URL=[https://prayerapi.faithforge.academy](https://prayerapi.faithforge.academy) # You get this after first deploy
+    VITE_AUTH0_AUDIENCE=https://prayerapi.faithforge.academy
+    VITE_API_URL=https://prayerapi.faithforge.academy # You get this after first deploy
     ```
 
 ## 💻 Local Development
@@ -94,8 +94,8 @@ Whenever you modify a struct in `internal/models`, sync the changes to TypeScrip
 We use a unified `Makefile` workflow. **Critical:** You must export the Auth0 config before deploying, as these values are baked into the Lambda environment.
 
 ```bash
-export AUTH0_ISSUER="[https://your-tenant.us.auth0.com/](https://your-tenant.us.auth0.com/)"
-export AUTH0_AUDIENCE="[https://prayerapi.faithforge.academy](https://prayerapi.faithforge.academy)"
+export AUTH0_ISSUER="https://your-tenant.us.auth0.com/"
+export AUTH0_AUDIENCE="https://prayerapi.faithforge.academy"
 
 make deploy
 ```

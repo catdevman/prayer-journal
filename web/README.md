@@ -1,48 +1,62 @@
-# web
+# Prayer Journal Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+A Single Page Application (SPA) built with **Vue 3**, **TypeScript**, **Vite**, and **Pinia**.
 
-## Recommended IDE Setup
+## ⚡ Quick Start
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
+# Install dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# Run development server
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## 🔧 Configuration
 
-```sh
-npm run build
+Create a `.env` file in the root of this directory. These variables are exposed to the client via Vite.
+
+```ini
+# Auth0 Configuration
+VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
+VITE_AUTH0_CLIENT_ID=your-client-id
+VITE_AUTH0_AUDIENCE=https://prayerapi.faithforge.academy
+
+# Backend API
+# Local: http://localhost:8080
+# Prod: https://prayerapi.faithforge.academy
+VITE_API_URL=http://localhost:8080
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 🏗 Architecture
 
-```sh
-npm run lint
-```
+### Auth0 Integration
+We use the **Closed Door** pattern.
+* `LoginView.vue`: Public landing page.
+* `DashboardView.vue`: Protected by `authGuard`.
+* **Router:** Configured in `src/router/index.ts` to automatically redirect unauthenticated users to the Universal Login page if they attempt to access protected routes.
+
+### Type Synchronization (`src/types`)
+**⚠️ DO NOT EDIT FILES IN `src/types/` MANUALLY.**
+
+TypeScript interfaces are generated automatically from the Go backend structs using `tygo`.
+To update types:
+1. Modify the Go struct in `../internal/models`.
+2. Run `make gen` from the repository root.
+
+## 📦 Scripts
+
+| Script | Description |
+| :--- | :--- |
+| `npm run dev` | Starts the dev server (usually localhost:5173). |
+| `npm run build` | Compiles assets to `dist/` for S3 deployment. |
+| `npm run type-check` | Runs `vue-tsc` to verify types without building. |
+| `npm run lint` | Runs ESLint. |
+
+## 🚀 Deployment
+
+Deployment is handled by the root **AWS CDK** stack.
+The `make deploy` command in the root directory will:
+1. Run `npm run build` in this directory.
+2. Upload the contents of `dist/` to the S3 Web Bucket.
+3. Invalidate the CloudFront distribution.
