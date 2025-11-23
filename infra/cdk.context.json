@@ -1,5 +1,9 @@
 {
   "acknowledged-issue-numbers": [
     34892
-  ]
+  ],
+  "hosted-zone:account=525665562974:domainName=faithforge.academy:region=us-east-1": {
+    "Id": "/hostedzone/Z0296659G9ZCD5AQS8YS",
+    "Name": "faithforge.academy."
+  }
 }
