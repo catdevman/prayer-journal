@@ -1,0 +1,8 @@
+packages:
+  - path: "prayer-journal/internal/models"
+    output_path: "web/src/types/index.ts"
+    fallback_type: "any"
+
+type_mappings:
+  time.Time: "string"
+  uuid.UUID: "string"
