@@ -1,2 +1,3 @@
 infra/cdk.out
 web/.vscode
+web/.env
