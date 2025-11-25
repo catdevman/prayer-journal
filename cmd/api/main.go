@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/catdevman/prayer-journal/internal/api/handlers"
 	"github.com/catdevman/prayer-journal/internal/api/middleware"
@@ -12,6 +14,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/lambda"
 	"github.com/go-chi/chi/v5" // Assuming Chi, replace with your router of choice
 )
 
@@ -52,5 +55,16 @@ func main() {
 	fmt.Println("Server starting on port 8080...")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
+	}
+
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		slog.Info("🚀 Local server starting on http://localhost:8080")
+		if err := http.ListenAndServe(":8080", r); err != nil {
+			slog.Error("Local server failed", "error", err)
+			os.Exit(1)
+		}
+		return
+	} else {
+		lambda.Start(r)
 	}
 }
